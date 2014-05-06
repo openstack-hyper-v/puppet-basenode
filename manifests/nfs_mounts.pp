@@ -11,11 +11,6 @@ define nfs_mounts($device,$options){
     require => Mount_providers::Do[$name],
   }
 
-  file {"${name}/hosts":
-    ensure => directory,
-    require => File["${name}/hosts"],
-  }
-
   file {"${name}/hosts/${hostname}":
     ensure => directory,
     require => File["${name}/hosts"],
