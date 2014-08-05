@@ -33,5 +33,11 @@ define nfs_mounts($device,$options){
     require => File["${name}/hosts/${hostname}"],
   }
 
+  exec {"facter":
+    command => "/usr/bin/facter -py > ${name}/hosts/${hostname}/facter.yaml",
+    creates => "${name}/hosts/${hostname}/facter.yaml",
+    require => File["${name}/hosts/${hostname}"],
+  }
+
 
 }
