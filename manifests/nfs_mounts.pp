@@ -33,10 +33,14 @@ define nfs_mounts($device,$options){
     require => File["${name}/hosts/${hostname}"],
   }
 
+  file {"${name}/facter":
+    ensure => directory,
+    require => Mount_providers::Do[$name],
+  }
   exec {"facter":
-    command => "/usr/bin/facter -py > ${name}/hosts/${hostname}/facter.yaml",
-    creates => "${name}/hosts/${hostname}/facter.yaml",
-    require => File["${name}/hosts/${hostname}"],
+    command => "/usr/bin/facter -py > ${name}/facter/${hostname}.yaml",
+    creates => "${name}/facter/${hostname}.yaml",
+    require => File["${name}/facter"],
   }
 
 
