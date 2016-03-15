@@ -1,7 +1,5 @@
 # == Class: basenode::etc_puppet
-class basenode::etc_puppet ()inherits params {
-  include basenode::params
-  
+class basenode::etc_puppet ()inherits basenode::params {
   $puppet_master = hiera('puppet_master',{})
 #    case $osfamily {
 #      'RedHat':{ provider => 'rpm' }
@@ -69,7 +67,7 @@ class basenode::etc_puppet ()inherits params {
     ensure => latest,
   }
 
-  class { 'puppet::agent':
+  class { '::puppet::agent':
     puppet_server => $puppet_master,
     environment   => production,
     splay         => true,

@@ -2,6 +2,7 @@
 #
 define basenode::virtual_user ($uid,$realname,$pass) {
 
+
   user{ $title:
     ensure     => 'present',
     uid        => $uid,
@@ -19,13 +20,10 @@ define basenode::virtual_user ($uid,$realname,$pass) {
   }
 
   file{"/home/${title}":
-    ensure  => directory,
-    owner   => $title,
-    group   => $title,
-    mode    => '0750',
-    require => [
-      User[$title],
-      Group[$title]
-    ],
+    ensure => directory,
+    owner  => $title,
+    group  => $title,
+    mode   => '0750',
+#    require => [ User[$title],Group[$title] ],
   }
 }
