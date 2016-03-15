@@ -1,49 +1,44 @@
-class basenode {
+# == Class: basenode::init
+class basenode () inherits basenode::params {
 
-  include params
-
-  $ntp_servers = hiera('ntp_servers',{})
+  $ntp_servers   = hiera('ntp_servers',{})
   $puppet_master = hiera('puppet_master',{})
-  $nfs_mounts     = hiera('nfs_mounts',{})
-  $nfs_packages = $params::nfs_packages
+  $nfs_mounts    = hiera('nfs_mounts',{})
+  $nfs_packages  = $params::nfs_packages
 
-  notify {"Node: ${hostname}":}
+  notify {"Node: ${::hostname}":}
 
   # Set NTP
-  class {'ntp':
+  class {'::ntp':
     servers => [ $ntp_servers ],
-  } 
-
-  class { 'puppet::agent':
-    puppet_server             => $puppet_master,
-    environment               => production,
-    splay                     => true,
   }
 
-  if $kernel == 'Linux' { 
+  class { '::puppet::agent':
+    puppet_server => $puppet_master,
+    environment   => production,
+    splay         => true,
+  }
 
+  if $::kernel == 'Linux' {
     package {$nfs_packages :
       ensure => latest,
     }
 
-   package {['python-paramiko','python-netaddr']:
-     ensure   => latest,
-   }
-   package {['screen','rsync']:
+    package {['python-paramiko','python-netaddr']:
       ensure   => latest,
-   }
+    }
+    package {['screen','rsync']:
+      ensure   => latest,
+    }
 
-
-
-#    class {'basenode::pxefile':}
-    class {'basenode::sshkey_root':}
+#   class {'::basenode::pxefile':}
+    class {'::basenode::sshkey_root':}
 
     create_resources(nfs_mounts,$nfs_mounts)
 
   }
 #  if $osfamily == 'Redhat' {
 #    exec {'update_yum':
-##      command   => '/usr/bin/yum update -y --disablerepo Xen4CentOS --skip-broken', 
 #      command   => '/usr/bin/yum update -y --skip-broken', 
 #      logoutput => true,
 #    }

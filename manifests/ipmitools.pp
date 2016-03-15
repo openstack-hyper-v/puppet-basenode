@@ -1,10 +1,12 @@
+# == Class: basenode::ipmitools
+#
 class basenode::ipmitools{
 
-   package {'ipmitool':
-     ensure => latest,
-   }
+  package {'ipmitool':
+    ensure => latest,
+  }
 
-  file {'/root/ipmi-tools': 
+  file {'/root/ipmi-tools':
     ensure  => directory,
     recurse => true,
     owner   => 'root',

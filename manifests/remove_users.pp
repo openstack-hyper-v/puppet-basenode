@@ -16,24 +16,22 @@
 #
 
 class basenode::remove_users {
-
-
-  notify { "xyz":
-    message => "OS = ${operatingsystem}",
+  notify { 'xyz':
+    message => "OS = ${::operatingsystem}",
   }
 
   #
   # Remove the legacy user created during the provisioning process.
   # The username will be the name of the OS: Ubuntu, CentOS, ...
   #
-  user { $operatingsystem:
-    ensure     => absent,
+  user { $::operatingsystem:
+    ensure => absent,
   }
 
-  file { "/home/${operatingsystem}":
-    ensure => absent,
-    force  => true,
-    subscribe => User[ $operatingsystem ],
+  file { "/home/${::operatingsystem}":
+    ensure    => absent,
+    force     => true,
+    subscribe => User[$::operatingsystem],
   }
 
 }

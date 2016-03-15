@@ -2,27 +2,30 @@
 #
 define basenode::virtual_user ($uid,$realname,$pass) {
 
-  user { $title:
-    ensure            =>  'present',
-    uid               =>  $uid,
-    gid               =>  $title,
-    shell             =>  '/bin/bash',
-    home              =>  "/home/${title}",
-    comment           =>  $realname,
-    password          =>  $pass,
-    managehome        =>  true,
-    require           =>  Group[$title],
+  user{ $title:
+    ensure     => 'present',
+    uid        => $uid,
+    gid        => $title,
+    shell      => '/bin/bash',
+    home       => "/home/${title}",
+    comment    => $realname,
+    password   => $pass,
+    managehome => true,
+    require    => Group[$title],
   }
 
-  group { $title:
-    gid               =>  $uid,
+  group{ $title:
+    gid => $uid,
   }
 
-  file { "/home/${title}":
-    ensure            =>  directory,
-    owner             =>  $title,
-    group             =>  $title,
-    mode              =>  0750,
-    require           =>  [ User[$title], Group[$title] ],
+  file{"/home/${title}":
+    ensure  => directory,
+    owner   => $title,
+    group   => $title,
+    mode    => '0750',
+    require => [
+      User[$title],
+      Group[$title]
+    ],
   }
 }

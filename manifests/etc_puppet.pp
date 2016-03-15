@@ -1,7 +1,6 @@
+# == Class: basenode::etc_puppet
 class basenode::etc_puppet ()inherits params {
-
-  include params
-
+  include basenode::params
   
   $puppet_master = hiera('puppet_master',{})
 #    case $osfamily {
@@ -12,57 +11,57 @@ class basenode::etc_puppet ()inherits params {
 #    }
 
   package {'puppet':
-    ensure     => latest,
+    ensure => latest,
   }
 
-  case $kernel {
+  case $::kernel {
     'Linux':{
       package {'librarian-puppet-maestrodev':
-        provider => 'gem',
         ensure   => latest,
+        provider => 'gem',
       }
 
       $roothome = '/root/'
 
-  vcsrepo{'/etc/puppet/hiera':
-    ensure   => latest,
-    provider => git,
-    source   => 'https://github.com/openstack-hyper-v/hiera.git',
-  }
+      vcsrepo{'/etc/puppet/hiera':
+        ensure   => latest,
+        provider => git,
+        source   => 'https://github.com/openstack-hyper-v/hiera.git',
+      }
 
-  vcsrepo{'/etc/puppet/manifests':
-    ensure   => latest,
-    provider => git,
-    source   => 'https://github.com/openstack-hyper-v/puppet-manifests.git',
-  }
-  vcsrepo{'/etc/puppet/files':
-    ensure   => latest,
-    provider => git,
-    source   => 'https://github.com/openstack-hyper-v/puppet-extra_Files.git',
-  }
-    vcsrepo{'/usr/local/src/Puppetfile-cambridge':
-      ensure   => latest,
-      provider => git,
-      source   => 'https://github.com/openstack-hyper-v/Puppetfile-cambridge.git',
+      vcsrepo{'/etc/puppet/manifests':
+        ensure   => latest,
+        provider => git,
+        source   => 'https://github.com/openstack-hyper-v/puppet-manifests.git',
+      }
+      vcsrepo{'/etc/puppet/files':
+        ensure   => latest,
+        provider => git,
+        source   => 'https://github.com/openstack-hyper-v/puppet-extra_Files.git',
+      }
+      vcsrepo{'/usr/local/src/Puppetfile-cambridge':
+        ensure   => latest,
+        provider => git,
+        source   => 'https://github.com/openstack-hyper-v/Puppetfile-cambridge.git',
+      }
     }
-  }
     'Windows':{
       Package { provider => 'chocolatey',}
       $roothome = 'C:\\Users\\Administrator\\'
     }
     default:{ notify{'we do not install puppet on you yet':}
     }
-}
+  }
 
 # Begin Common Puppet config
 #
 ##
 
   file {"${roothome}.gitconfig":
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     content => template('basenode/gitconfig.erb'),
   }
 
@@ -71,9 +70,9 @@ class basenode::etc_puppet ()inherits params {
   }
 
   class { 'puppet::agent':
-    puppet_server             => $puppet_master,
-    environment               => production,
-    splay                     => true,
+    puppet_server => $puppet_master,
+    environment   => production,
+    splay         => true,
   }
 
 }
